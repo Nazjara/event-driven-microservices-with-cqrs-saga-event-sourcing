@@ -3,6 +3,7 @@ package com.nazjara.service;
 import com.nazjara.constant.AccountsConstants;
 import com.nazjara.dto.AccountsDto;
 import com.nazjara.entity.Accounts;
+import com.nazjara.event.AccountUpdatedEvent;
 import com.nazjara.exception.AccountAlreadyExistsException;
 import com.nazjara.exception.ResourceNotFoundException;
 import com.nazjara.mapper.AccountsMapper;
@@ -21,20 +22,24 @@ public class AccountsServiceImpl implements IAccountsService {
   private final AccountsRepository accountsRepository;
 
   /**
-   * @param mobileNumber - String
+   * Creates a new account if no active account exists with the specified mobile number.
+   *
+   * @param accounts - An instance of {@code Accounts} containing account details such as mobile number.
+   *                   This object is used to create a new account if no active account is found.
+   * @throws AccountAlreadyExistsException if an active account already exists using the given mobile number.
    */
   @Override
-  public void createAccount(String mobileNumber) {
+  public void createAccount(Accounts accounts) {
     var optionalAccounts = accountsRepository.findByMobileNumberAndActiveSw(
-        mobileNumber,
+        accounts.getMobileNumber(),
         AccountsConstants.ACTIVE_SW);
 
     if (optionalAccounts.isPresent()) {
       throw new AccountAlreadyExistsException(
-          "Account already registered with given mobileNumber " + mobileNumber);
+          "Account already registered with given mobileNumber " + accounts.getMobileNumber());
     }
 
-    accountsRepository.save(createNewAccount(mobileNumber));
+    accountsRepository.save(createNewAccount(accounts.getMobileNumber()));
   }
 
   /**
@@ -68,18 +73,23 @@ public class AccountsServiceImpl implements IAccountsService {
   }
 
   /**
-   * @param accountsDto - AccountsDto Object
-   * @return boolean indicating if the update of Account details is successful or not
+   * Updates an account using the details provided in the {@code AccountUpdatedEvent}.
+   * This method retrieves the account based on the mobile number and active status,
+   * updates its details, and persists the changes to the database.
+   *
+   * @param event - An instance of {@code AccountUpdatedEvent} containing the updated account details,
+   *                including mobile number and other optional parameters.
+   * @return {@code true} if the account update operation is successful.
+   * @throws ResourceNotFoundException if no active account is found for the specified mobile number.
    */
   @Override
-  public boolean updateAccount(AccountsDto accountsDto) {
+  public boolean updateAccount(AccountUpdatedEvent event) {
     var account = accountsRepository.findByMobileNumberAndActiveSw(
-            accountsDto.getMobileNumber(),
+            event.getMobileNumber(),
             AccountsConstants.ACTIVE_SW)
         .orElseThrow(() -> new ResourceNotFoundException("Account", "mobileNumber",
-            accountsDto.getMobileNumber()));
+            event.getMobileNumber()));
 
-    AccountsMapper.mapToAccounts(accountsDto, account);
     accountsRepository.save(account);
     return true;
   }

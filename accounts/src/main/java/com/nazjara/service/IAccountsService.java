@@ -1,6 +1,8 @@
 package com.nazjara.service;
 
 import com.nazjara.dto.AccountsDto;
+import com.nazjara.entity.Accounts;
+import com.nazjara.event.AccountUpdatedEvent;
 
 /**
  * Interface for Account-related operations
@@ -8,10 +10,12 @@ import com.nazjara.dto.AccountsDto;
 public interface IAccountsService {
 
   /**
+   * Creates a new account in the system.
    *
-   * @param mobileNumber - Input Mobile Number
+   * @param accounts the account data to be created, including details
+   *                 such as mobile number, account type, branch address, etc.
    */
-  void createAccount(String mobileNumber);
+  void createAccount(Accounts accounts);
 
   /**
    *
@@ -21,11 +25,14 @@ public interface IAccountsService {
   AccountsDto fetchAccount(String mobileNumber);
 
   /**
+   * Updates the account details in the system based on the provided event data.
    *
-   * @param accountsDto - AccountsDto Object
-   * @return boolean indicating if the update of Account details is successful or not
+   * @param event the AccountUpdatedEvent object containing updated account details
+   *              such as account number, mobile number, account type, branch address,
+   *              and active/inactive status.
+   * @return true if the account details were successfully updated; false otherwise
    */
-  boolean updateAccount(AccountsDto accountsDto);
+  boolean updateAccount(AccountUpdatedEvent event);
 
   /**
    *

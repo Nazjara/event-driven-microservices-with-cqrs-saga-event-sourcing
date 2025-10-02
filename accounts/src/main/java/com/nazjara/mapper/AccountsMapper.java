@@ -2,6 +2,7 @@ package com.nazjara.mapper;
 
 import com.nazjara.dto.AccountsDto;
 import com.nazjara.entity.Accounts;
+import com.nazjara.event.AccountUpdatedEvent;
 import lombok.experimental.UtilityClass;
 
 // can use Mapstruct instead
@@ -19,6 +20,12 @@ public class AccountsMapper {
     accounts.setAccountNumber(accountsDto.getAccountNumber());
     accounts.setAccountType(accountsDto.getAccountType());
     accounts.setBranchAddress(accountsDto.getBranchAddress());
+    return accounts;
+  }
+
+  public Accounts mapEventToAccount(AccountUpdatedEvent event, Accounts accounts) {
+    accounts.setAccountType(event.getAccountType());
+    accounts.setBranchAddress(event.getBranchAddress());
     return accounts;
   }
 }
