@@ -3,12 +3,14 @@ package com.nazjara.service;
 import com.nazjara.constant.AccountsConstants;
 import com.nazjara.dto.AccountsDto;
 import com.nazjara.entity.Accounts;
+import com.nazjara.event.AccountDataChangedEvent;
 import com.nazjara.exception.AccountAlreadyExistsException;
 import com.nazjara.exception.ResourceNotFoundException;
 import com.nazjara.mapper.AccountsMapper;
 import com.nazjara.repository.AccountsRepository;
 import java.util.Random;
 import lombok.RequiredArgsConstructor;
+import org.axonframework.eventhandling.gateway.EventGateway;
 import org.springframework.stereotype.Service;
 
 /**
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Service;
 public class AccountsServiceImpl implements IAccountsService {
 
   private final AccountsRepository accountsRepository;
+  private EventGateway eventGateway;
 
   /**
    * @param mobileNumber - String
@@ -95,6 +98,12 @@ public class AccountsServiceImpl implements IAccountsService {
     );
     account.setActiveSw(AccountsConstants.IN_ACTIVE_SW);
     accountsRepository.save(account);
+
+    var event = new AccountDataChangedEvent();
+    event.setAccountNumber(null);
+    event.setMobileNumber(account.getMobileNumber());
+    eventGateway.publish(event);
+
     return true;
   }
 }

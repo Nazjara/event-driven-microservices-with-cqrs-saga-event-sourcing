@@ -36,6 +36,12 @@ public class GatewayServiceApplication {
             .path("/bank/cards/**")
             .filters(f -> f.rewritePath("/bank/cards/(?<segment>.*)", "/${segment}")
                 .addResponseHeader("X-Response-Time", LocalDateTime.now().toString()))
-            .uri("lb://CARDS")).build();
+            .uri("lb://CARDS"))
+        .route(p -> p
+            .path("/bank/profile/**")
+            .filters(f -> f.rewritePath("/bank/profile/(?<segment>.*)", "/${segment}")
+                .addResponseHeader("X-Response-Time", LocalDateTime.now().toString()))
+            .uri("lb://PROFILE"))
+        .build();
   }
 }

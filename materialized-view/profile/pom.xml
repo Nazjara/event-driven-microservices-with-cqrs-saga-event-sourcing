@@ -9,9 +9,9 @@
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>customer</artifactId>
+    <artifactId>profile</artifactId>
     <version>1.0.0-SNAPSHOT</version>
-    <name>customer</name>
+    <name>profile</name>
 
     <dependencies>
         <dependency>
