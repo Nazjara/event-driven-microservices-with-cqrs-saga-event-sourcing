@@ -3,6 +3,8 @@ package com.nazjara.query.projection;
 import com.nazjara.entity.Customer;
 import com.nazjara.event.CustomerCreatedEvent;
 import com.nazjara.event.CustomerDeletedEvent;
+import com.nazjara.event.CustomerMobileNumberRollbackedEvent;
+import com.nazjara.event.CustomerMobileNumberUpdatedEvent;
 import com.nazjara.event.CustomerUpdatedEvent;
 import com.nazjara.service.ICustomerService;
 import lombok.RequiredArgsConstructor;
@@ -33,5 +35,15 @@ public class CustomerProjection {
   @EventHandler
   public void on(CustomerDeletedEvent event) {
     service.deleteCustomer(event.getCustomerId());
+  }
+
+  @EventHandler
+  public void on(CustomerMobileNumberUpdatedEvent event) {
+    service.updateMobileNumber(event.getCurrentMobileNumber(), event.getNewMobileNumber());
+  }
+
+  @EventHandler
+  public void on(CustomerMobileNumberRollbackedEvent event) {
+    service.updateMobileNumber(event.getNewMobileNumber(), event.getCurrentMobileNumber());
   }
 }

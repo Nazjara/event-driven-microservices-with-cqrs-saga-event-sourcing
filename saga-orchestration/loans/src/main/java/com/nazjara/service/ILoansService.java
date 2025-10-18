@@ -26,4 +26,14 @@ public interface ILoansService {
    * @return boolean indicating if the delete of loan details is successful or not
    */
   boolean deleteLoan(Long mobileNumber);
+
+
+  /**
+   * Updates the mobile number associated with a loan record.
+   *
+   * @param oldMobileNumber the current mobile number associated with the loan
+   * @param newMobileNumber the new mobile number to be updated for the loan
+   * @return true if the update operation is successful, false otherwise
+   */
+  boolean updateMobileNumber(String oldMobileNumber, String newMobileNumber);
 }

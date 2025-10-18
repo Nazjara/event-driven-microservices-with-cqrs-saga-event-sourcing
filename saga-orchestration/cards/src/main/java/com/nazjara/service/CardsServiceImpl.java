@@ -90,4 +90,23 @@ public class CardsServiceImpl implements ICardsService {
     cardsRepository.save(card);
     return true;
   }
+
+  /**
+   * Updates the mobile number associated with a card.
+   *
+   * @param oldMobileNumber the current mobile number to be updated
+   * @param newMobileNumber the new mobile number to associate with the card
+   * @return boolean indicating whether the update operation was successful or not
+   */
+  @Override
+  public boolean updateMobileNumber(String oldMobileNumber, String newMobileNumber) {
+    var card = cardsRepository.findByMobileNumberAndActiveSw(oldMobileNumber, true)
+        .orElseThrow(
+            () -> new ResourceNotFoundException("Card", "mobileNumber", oldMobileNumber)
+        );
+
+    card.setMobileNumber(newMobileNumber);
+    cardsRepository.save(card);
+    return true;
+  }
 }

@@ -40,4 +40,14 @@ public interface IAccountsService {
    * @return boolean indicating if the delete of Account details is successful or not
    */
   boolean deleteAccount(Long accountNumber);
+
+
+  /**
+   * Updates the mobile number of an existing account.
+   *
+   * @param oldMobileNumber the current mobile number associated with the account
+   * @param newMobileNumber the new mobile number to update the account with
+   * @return true if the mobile number was successfully updated, false otherwise
+   */
+  boolean updateMobileNumber(String oldMobileNumber, String newMobileNumber);
 }

@@ -30,4 +30,13 @@ public interface ICardsService {
    * @return boolean indicating if the delete of card details is successful or not
    */
   boolean deleteCard(Long cardNumber);
+
+  /**
+   * Updates the mobile number associated with a card.
+   *
+   * @param oldMobileNumber the current mobile number to be updated
+   * @param newMobileNumber the new mobile number to associate with the card
+   * @return boolean indicating whether the update operation was successful or not
+   */
+  boolean updateMobileNumber(String oldMobileNumber, String newMobileNumber);
 }

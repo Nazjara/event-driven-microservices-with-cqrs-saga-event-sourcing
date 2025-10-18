@@ -66,4 +66,15 @@ public class CustomerServiceImpl implements ICustomerService {
     return true;
   }
 
+  @Override
+  public boolean updateMobileNumber(String mobileNumber, String newMobileNumber) {
+    var customer = customerRepository.findByMobileNumberAndActiveSw(mobileNumber, true).orElseThrow(
+        () -> new ResourceNotFoundException("Customer", "mobileNumber", mobileNumber)
+    );
+
+    customer.setMobileNumber(newMobileNumber);
+    customerRepository.save(customer);
+    return true;
+  }
+
 }

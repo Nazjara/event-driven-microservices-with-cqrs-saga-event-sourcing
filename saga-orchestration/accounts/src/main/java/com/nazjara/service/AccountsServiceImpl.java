@@ -24,9 +24,11 @@ public class AccountsServiceImpl implements IAccountsService {
   /**
    * Creates a new account if no active account exists with the specified mobile number.
    *
-   * @param accounts - An instance of {@code Accounts} containing account details such as mobile number.
-   *                   This object is used to create a new account if no active account is found.
-   * @throws AccountAlreadyExistsException if an active account already exists using the given mobile number.
+   * @param accounts - An instance of {@code Accounts} containing account details such as mobile
+   *                 number. This object is used to create a new account if no active account is
+   *                 found.
+   * @throws AccountAlreadyExistsException if an active account already exists using the given
+   *                                       mobile number.
    */
   @Override
   public void createAccount(Accounts accounts) {
@@ -73,14 +75,15 @@ public class AccountsServiceImpl implements IAccountsService {
   }
 
   /**
-   * Updates an account using the details provided in the {@code AccountUpdatedEvent}.
-   * This method retrieves the account based on the mobile number and active status,
-   * updates its details, and persists the changes to the database.
+   * Updates an account using the details provided in the {@code AccountUpdatedEvent}. This method
+   * retrieves the account based on the mobile number and active status, updates its details, and
+   * persists the changes to the database.
    *
-   * @param event - An instance of {@code AccountUpdatedEvent} containing the updated account details,
-   *                including mobile number and other optional parameters.
+   * @param event - An instance of {@code AccountUpdatedEvent} containing the updated account
+   *              details, including mobile number and other optional parameters.
    * @return {@code true} if the account update operation is successful.
-   * @throws ResourceNotFoundException if no active account is found for the specified mobile number.
+   * @throws ResourceNotFoundException if no active account is found for the specified mobile
+   *                                   number.
    */
   @Override
   public boolean updateAccount(AccountUpdatedEvent event) {
@@ -104,6 +107,18 @@ public class AccountsServiceImpl implements IAccountsService {
         () -> new ResourceNotFoundException("Account", "accountNumber", accountNumber.toString())
     );
     account.setActiveSw(AccountsConstants.IN_ACTIVE_SW);
+    accountsRepository.save(account);
+    return true;
+  }
+
+  @Override
+  public boolean updateMobileNumber(String oldMobileNumber, String newMobileNumber) {
+    var account = accountsRepository.findByMobileNumberAndActiveSw(oldMobileNumber, true)
+        .orElseThrow(
+            () -> new ResourceNotFoundException("Account", "mobileNumber", oldMobileNumber)
+        );
+
+    account.setMobileNumber(newMobileNumber);
     accountsRepository.save(account);
     return true;
   }

@@ -2,9 +2,13 @@ package com.nazjara.command.aggregate;
 
 import com.nazjara.command.CreateAccountCommand;
 import com.nazjara.command.DeleteAccountCommand;
+import com.nazjara.command.RollbackAccountMobileNumberCommand;
 import com.nazjara.command.UpdateAccountCommand;
+import com.nazjara.command.UpdateAccountMobileNumberCommand;
 import com.nazjara.event.AccountCreatedEvent;
 import com.nazjara.event.AccountDeletedEvent;
+import com.nazjara.event.AccountMobileNumberRollbackedEvent;
+import com.nazjara.event.AccountMobileNumberUpdatedEvent;
 import com.nazjara.event.AccountUpdatedEvent;
 import lombok.NoArgsConstructor;
 import org.axonframework.commandhandling.CommandHandler;
@@ -26,6 +30,7 @@ public class AccountAggregate {
   private String accountType;
   private String branchAddress;
   private boolean activeSw;
+  private String errorMessage;
 
   @CommandHandler
   public AccountAggregate(CreateAccountCommand command) {
@@ -72,5 +77,30 @@ public class AccountAggregate {
   @EventSourcingHandler
   public void on(AccountDeletedEvent event) {
     this.activeSw = event.isActiveSw();
+  }
+
+  @CommandHandler
+  public void handleUpdateMobileNumber(UpdateAccountMobileNumberCommand command) {
+    var event = new AccountMobileNumberUpdatedEvent();
+    BeanUtils.copyProperties(command, event);
+    AggregateLifecycle.apply(event);
+  }
+
+  @EventSourcingHandler
+  public void on(AccountMobileNumberUpdatedEvent event) {
+    this.mobileNumber = event.getNewMobileNumber();
+  }
+
+  @CommandHandler
+  public void handleRollbackMobileNumber(RollbackAccountMobileNumberCommand command) {
+    var event = new AccountMobileNumberRollbackedEvent();
+    BeanUtils.copyProperties(command, event);
+    AggregateLifecycle.apply(event);
+  }
+
+  @EventSourcingHandler
+  public void on(AccountMobileNumberRollbackedEvent event) {
+    this.mobileNumber = event.getCurrentMobileNumber();
+    this.errorMessage = event.getErrorMessage();
   }
 }
