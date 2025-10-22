@@ -36,7 +36,7 @@ echo "=== Building all components with Maven (skip tests) ==="
 for MODULE in "${MODULES[@]}"; do
   if [ -d "$MODULE" ]; then
     echo "Building $MODULE"
-    (cd "$MODULE" && mvn clean verify -DskipTests)
+    (cd "$MODULE" && ../mvnw clean verify -DskipTests)
   else
     echo "Directory $MODULE does not exist, skipping"
   fi
@@ -46,7 +46,7 @@ done
 #for MODULE in "${MODULES[@]}"; do
 #  if [ -d "$MODULE" ]; then
 #    echo "Building image for $MODULE"
-#    (cd "$MODULE" && mvn jib:dockerBuild -DskipTests)
+#    (cd "$MODULE" && ../mvnw jib:dockerBuild -DskipTests)
 #  fi
 #done
 
